@@ -1,0 +1,46 @@
+# when ever there is a "cd" command in use, always declare a variable as
+# path=$(pwd)
+
+# output redirection >>  declare a variable >>
+# log=/tmp/roboshop.log
+# call the variable ${log}
+# result=>>   &>> ${log}
+
+# this is a function with hardcoded values
+# STATUS_CHECK () {
+#  if [ $? -eq 0 ] ; then
+#  echo -e "\e[31m SUCCESS \e[0m" ;
+#  else
+#   echo -e "\e[32m FAIL \e[0m""
+#  fi
+# }
+
+# this is a function with DYNAMIC values, where values are injected inside the function
+# we are creating a function and we are sending a INPUT to the Function
+
+# PRINT_HEADING () {
+# echo $1
+# }
+
+source common.sh
+
+# we are declaring a variable for the component
+component=dispatch
+
+# we are declaring a variable to match a string_condition inside the file >> common.sh
+load_schema=false
+# schema_type=mongodb
+
+PRINT_HEADING "Install GoLang"
+yum install golang -y &>> ${log}
+STATUS_CHECK
+
+APP_USER
+
+PRINT_HEADING "Lets download the dependencies & build the software."
+go mod init dispatch &>> ${log}
+go get &>> ${log}
+go build &>> ${log}
+STATUS_CHECK
+
+SYSTEMD_SERVICE

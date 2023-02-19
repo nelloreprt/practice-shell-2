@@ -1,19 +1,31 @@
 # when ever there is a "cd" command in use, always declare a variable as
-#path=$(pwd)
+# path=$(pwd)
 
 # output redirection >>  declare a variable >>
-#log=/tmp/roboshop.log
-#call the variable ${log}
-#result=>>   &>> ${log}
+# log=/tmp/roboshop.log
+# call the variable ${log}
+# result=>>   &>> ${log}
 
 # this is a function with hardcoded values
-#STATUS_CHECK () {
+# STATUS_CHECK () {
 #  if [ $? -eq 0 ] ; then
 #  echo -e "\e[31m SUCCESS \e[0m" ;
 #  else
 #   echo -e "\e[32m FAIL \e[0m""
 #  fi
-#}
+# }
+
+# this script should not start if password is not exported before the start of this script
+# -z is used as a string comparision expression
+# where in if >> # " mysql_password=RoboShop@1 "  >> " export mysql_password "
+# if password is not declared using export command
+# then -z will check this variable ${mysql_password} is empty or not >> " "-z ${mysql_password}
+# If the value of the variable is empty then it is TRUE, and it will not start the script
+
+if [ -z ${mysql_password} ]
+then
+echo "mysql password is missing"
+fi
 
 # we are declaring a variable for the component
 component=shipping

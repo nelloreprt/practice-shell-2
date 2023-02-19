@@ -44,7 +44,7 @@ APP_USER () {
     # when we run useradd command again and again, once if user is created, script will not create the same user again,
     # so we need to add a [ " if-else " condition along with "id" command ] to skip user creation incase user is already crerated
     id roboshop &>> ${log}
-    if [ $? -eq 0 ]
+    if [ $? -ne 0 ]
     then
       echo "user roboshop already exsit"
       else
@@ -108,7 +108,8 @@ then
      STATUS_CHECK
 
      PRINT_HEADING "Load Schema"
-     # password should not be hardcoded, so we will " EXPORT " the password while implementing the shipping component script
+     # password should not be hardcoded,
+     # so we will " EXPORT " the password while implementing the shipping component script
      # mysql_password=RoboShop@1  >> export mysql_password
      mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -p${mysql_password} < /app/schema/shipping.sql  &>> ${log}
      STATUS_CHECK

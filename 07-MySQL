@@ -1,0 +1,83 @@
+# when ever there is a "cd" command in use, always declare a variable as
+# path=$(pwd)
+
+# output redirection >>  declare a variable >>
+# log=/tmp/roboshop.log
+# call the variable ${log}
+# result=>>   &>> ${log}
+
+# this is a function with hardcoded values
+# STATUS_CHECK () {
+#  if [ $? -eq 0 ] ; then
+#  echo -e "\e[31m SUCCESS \e[0m" ;
+#  else
+#   echo -e "\e[32m FAIL \e[0m""
+#  fi
+# }
+
+# this script should not start if password is not exported before the start of this script
+# -z is used as a string comparision expression
+# where in if >> # " mysql_password=RoboShop@1 "  >> " export mysql_password "
+# if password is not declared using export command
+# then -z will check this variable ${mysql_password} is empty or not >> " "-z ${mysql_password}
+# If the value of the variable is empty then it is TRUE, and it will not start the script
+
+if [ -z ${mysql_password} ]
+then
+echo "mysql password is missing"
+fi
+
+# we are declaring a variable for the component
+component=mysqld
+
+# we are declaring a variable to match a string_condition inside the file >> common.sh
+load_schema=false
+#schema_type=mysql
+
+source common.sh
+
+PRINT_HEADING " MySQL 5.7. So lets disable MySQL 8 version."
+dnf module disable mysql -y &>> ${log}
+STATUS_CHECK
+
+PRINT_HEADING " Setup the MySQL5.7 repo file"
+cp ${files}/mysql.repo /etc/yum.repos.d/mysql.repo &>> ${log}
+STATUS_CHECK
+
+PRINT_HEADING " Install MySQL Server"
+yum install mysql-community-server -y &>> ${log}
+STATUS_CHECK
+
+PRINT_HEADING "Enable the service."
+systemctl enable ${component} &>> ${log}
+STATUS_CHECK
+
+PRINT_HEADING "Start the service."
+systemctl start ${component} &>> ${log}
+STATUS_CHECK
+
+PRINT_HEADING "change the default root password to start using the database service"
+mysql_secure_installation --set-root-pass ${mysql_password} &>> ${log}
+STATUS_CHECK
+
+PRINT_HEADING "check the new password working or not"
+mysql -uroot -p${mysql_password} &>> ${log}
+STATUS_CHECK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
